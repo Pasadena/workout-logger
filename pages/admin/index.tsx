@@ -4,9 +4,14 @@ import styled from "styled-components";
 import { ExerciseTypesQuery } from "apollo/queries";
 import { ExerciseType } from "types/types";
 import { initClient } from "apollo/client";
+import TypeForm from "pages/admin/TypeForm";
 
 const Container = styled.div`
   width: 30%;
+  & > * {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const TypesList = styled.div`
@@ -44,6 +49,7 @@ export default function AdminView() {
   }
   return (
     <Container>
+      <TypeForm />
       <TypesList>
         <TypeListHeader>
           Available Types

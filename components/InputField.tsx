@@ -5,6 +5,7 @@ const Label = styled.label`
   font-weight: 600;
 `;
 export const Input = styled.input`
+  background-color: transparent;
   margin-left: 0.5rem;
   padding: 0.25rem;
   outline: none;

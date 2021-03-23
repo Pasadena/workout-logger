@@ -64,3 +64,12 @@ export const ExerciseTypesQuery = gql`
     }
   }
 `;
+
+export const CreateExerciseTypeMutation = gql`
+  mutation CreateExerciseTypeMutation($name: String!) {
+    saveExerciseType(name: $name) {
+      id
+      name
+    }
+  }
+`;

@@ -3,6 +3,7 @@ import { ExerciseType, Workout, WorkoutExercise } from "types/types";
 
 let currWorkoutId = 0;
 let currExerciseId = 0;
+let currTypeId = 0;
 
 let types: ExerciseType[] = [
   {
@@ -91,6 +92,15 @@ export const resolvers = {
       workouts = workouts.filter((item: Workout) => item.id !== id);
       console.log("ID: ", id);
       return id;
+    },
+    saveExerciseType: (_, args: { name: string }) => {
+      console.log("Creating new type", args.name);
+      const newExerciseType = {
+        id: (++currExerciseId).toString(),
+        name: args.name,
+      };
+      types.push(newExerciseType);
+      return newExerciseType;
     },
   },
 };

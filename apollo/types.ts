@@ -52,5 +52,6 @@ export const types = gql`
     saveWorkout(workout: WorkoutInput!): Workout!
     updateWorkout(workout: WorkoutInput!): Workout!
     deleteWorkout(id: ID!): ID!
+    saveExerciseType(name: String!): ExerciseType
   }
 `;
