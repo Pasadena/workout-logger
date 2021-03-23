@@ -5,6 +5,7 @@ import { ExerciseTypesQuery } from "apollo/queries";
 import { ExerciseType } from "types/types";
 import { initClient } from "apollo/client";
 import TypeForm from "pages/admin/TypeForm";
+import DeletableTile from "components/DeletableTile";
 
 const Container = styled.div`
   width: 30%;
@@ -18,6 +19,9 @@ const TypesList = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  & > * {
+    margin-bottom: 1rem;
+  }
 `;
 
 const TypeListHeader = styled.h3`
@@ -56,7 +60,13 @@ export default function AdminView() {
           <TypeCount>{data.exerciseTypes.length} types</TypeCount>
         </TypeListHeader>
         {data.exerciseTypes.map((type: ExerciseType) => (
-          <Type key={type.id}>{type.name}</Type>
+          <DeletableTile
+            key={type.id}
+            onDelete={() => {}}
+            onTileClicked={() => {}}
+          >
+            <Type>{type.name}</Type>
+          </DeletableTile>
         ))}
       </TypesList>
     </Container>

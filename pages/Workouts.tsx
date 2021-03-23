@@ -5,6 +5,7 @@ import { ApolloCache, useMutation } from "@apollo/client";
 import { RemoveWorkoutMutation } from "apollo/queries";
 import { Workout } from "types/types";
 import { useRouter } from "next/router";
+import DeletableTile from "components/DeletableTile";
 
 const Container = styled.div`
   min-width: 400px;
@@ -96,18 +97,16 @@ const Workouts = ({ workouts }: Props) => {
         <WorkoutCount>{`${workouts.length} workouts`}</WorkoutCount>
       </Header>
       {workouts.map((workout: Workout, index: number) => (
-        <WorkoutContainer
-          onClick={() => router.push(`/edit/${workout.id}`)}
+        <DeletableTile
           key={`${workout.id}-${index}`}
+          onDelete={() => removeWorkout({ variables: { id: workout.id } })}
+          onTileClicked={() => router.push(`/edit/${workout.id}`)}
         >
           <WorkoutTile>
             <WorkoutDate>{workout.date}</WorkoutDate>
             <WorkoutExercises>{`${workout.exerciseCount} exercises`}</WorkoutExercises>
           </WorkoutTile>
-          <DeleteIcon
-            onClick={() => removeWorkout({ variables: { id: workout.id } })}
-          />
-        </WorkoutContainer>
+        </DeletableTile>
       ))}
     </Container>
   );
