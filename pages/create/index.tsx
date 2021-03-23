@@ -1,29 +1,11 @@
 import React from "react";
-import { ApolloCache, gql, useMutation } from "@apollo/client";
+import { ApolloCache, FetchResult, gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 
 import { AddWorkoutMutation } from "apollo/queries";
 import WorkoutForm from "components/WorkoutForm";
 import { Workout, WorkoutExercise } from "types/types";
-
-const updateWorkoutCache = (cache: ApolloCache<Workout>, result) => {
-  cache.modify({
-    fields: {
-      workouts(existingWorkouts: []) {
-        const newWorkoutRef = cache.writeFragment({
-          data: result.data.saveWorkout,
-          fragment: gql`
-            fragment NewWorkout on Workout {
-              id
-              date
-            }
-          `,
-        });
-        return [...existingWorkouts, newWorkoutRef];
-      },
-    },
-  });
-};
+import { appendToCache } from "apollo/cache";
 
 export default function CreateWorkout() {
   const router = useRouter();
@@ -33,12 +15,25 @@ export default function CreateWorkout() {
     ],
   });
 
-  const [addWorkout, { data: addWorkoutResponse }] = useMutation<Workout>(
-    AddWorkoutMutation,
-    {
-      update: updateWorkoutCache,
-    }
-  );
+  const [addWorkout, { data: addWorkoutResponse }] = useMutation<{
+    saveWorkout: Workout;
+  }>(AddWorkoutMutation, {
+    update: (
+      cache: ApolloCache<{ saveWorkout: Workout }>,
+      result: FetchResult<{ saveWorkout: Workout }>
+    ) =>
+      appendToCache(
+        cache,
+        "workouts",
+        result.data.saveWorkout,
+        gql`
+          fragment NewWorkout on Workout {
+            id
+            date
+          }
+        `
+      ),
+  });
 
   React.useEffect(() => {
     if (addWorkoutResponse) {

@@ -1,10 +1,12 @@
 import React, { FormEvent } from "react";
 import styled from "styled-components";
-import { ApolloCache, gql, useMutation } from "@apollo/client";
+import { ApolloCache, FetchResult, gql, useMutation } from "@apollo/client";
 
 import { CreateExerciseTypeMutation } from "apollo/queries";
 import InputField from "components/InputField";
 import { PrimaryButton } from "components/Button";
+import { appendToCache } from "apollo/cache";
+import { ExerciseType } from "types/types";
 
 const Form = styled.form`
   padding: 1rem;
@@ -25,29 +27,27 @@ const Content = styled.div`
   padding-bottom: 1rem;
 `;
 
-function updateCache(cache: ApolloCache<any>, result: any) {
-  cache.modify({
-    fields: {
-      exerciseTypes: (existingTypes = []) => {
-        const newType = cache.writeFragment({
-          data: result.data.saveExerciseType,
-          fragment: gql`
-            fragment NewType on ExerciseType {
-              id
-              name
-            }
-          `,
-        });
-        return existingTypes.concat([newType]);
-      },
-    },
-  });
-}
-
 export default function TypeForm() {
   const [name, setName] = React.useState("");
-  const [saveExerciseType] = useMutation(CreateExerciseTypeMutation, {
-    update: updateCache,
+  const [saveExerciseType] = useMutation<
+    { saveExerciseType: ExerciseType },
+    { name: string }
+  >(CreateExerciseTypeMutation, {
+    update: (
+      cache: ApolloCache<{ saveExerciseType: ExerciseType }>,
+      result: FetchResult<{ saveExerciseType: ExerciseType }>
+    ) =>
+      appendToCache(
+        cache,
+        "exerciseTypes",
+        result.data.saveExerciseType,
+        gql`
+          fragment NewType on ExerciseType {
+            id
+            name
+          }
+        `
+      ),
   });
 
   const createType = React.useCallback(
