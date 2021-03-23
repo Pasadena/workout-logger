@@ -55,3 +55,12 @@ export const UpdateWorkoutMutation = gql`
     }
   }
 `;
+
+export const ExerciseTypesQuery = gql`
+  query ExerciseTypesQuery {
+    exerciseTypes {
+      id
+      name
+    }
+  }
+`;

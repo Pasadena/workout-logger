@@ -20,6 +20,11 @@ export const types = gql`
     exerciseCount: Int!
   }
 
+  type ExerciseType {
+    id: ID!
+    name: String!
+  }
+
   input ExerciseSetInput {
     order: Int!
     reps: Int!
@@ -40,6 +45,7 @@ export const types = gql`
   type Query {
     workouts: [Workout]
     workout(id: ID!): Workout!
+    exerciseTypes: [ExerciseType]!
   }
 
   type Mutation {

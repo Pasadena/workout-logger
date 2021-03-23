@@ -18,3 +18,8 @@ export interface Workout {
   exerciseCount?: number;
   updated_at?: string;
 }
+
+export interface ExerciseType {
+  id?: string;
+  name: string;
+}

@@ -1,9 +1,19 @@
-import { gql } from "@apollo/client";
 import { format } from "date-fns";
-import { Workout, WorkoutExercise } from "types/types";
+import { ExerciseType, Workout, WorkoutExercise } from "types/types";
 
 let currWorkoutId = 0;
 let currExerciseId = 0;
+
+let types: ExerciseType[] = [
+  {
+    id: "111-222",
+    name: "Push-up",
+  },
+  {
+    id: "111-333",
+    name: "Chin-up",
+  },
+];
 
 let workouts: Workout[] = [
   {
@@ -36,6 +46,9 @@ export const resolvers = {
     workout: (obj, args, context, info) => {
       const workout = workouts.find((item: Workout) => item.id === args.id);
       return workout;
+    },
+    exerciseTypes: (obj, args, context, info) => {
+      return types;
     },
   },
   Workout: {
