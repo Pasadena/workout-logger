@@ -9,7 +9,7 @@ export const types = gql`
   type Exercise {
     id: ID!
     order: Int!
-    type: String!
+    type: ExerciseType!
     sets: [ExerciseSet]!
   }
   type Workout {
@@ -25,6 +25,11 @@ export const types = gql`
     name: String!
   }
 
+  input ExerciseTypeInput {
+    id: ID!
+    name: String!
+  }
+
   input ExerciseSetInput {
     order: Int!
     reps: Int!
@@ -33,7 +38,7 @@ export const types = gql`
   input ExerciseInput {
     id: String
     order: Int!
-    type: String!
+    type: ExerciseTypeInput!
     sets: [ExerciseSetInput]!
   }
   input WorkoutInput {
@@ -46,6 +51,7 @@ export const types = gql`
     workouts: [Workout]
     workout(id: ID!): Workout!
     exerciseTypes: [ExerciseType]!
+    searchExerciseTypes(partialName: String): [ExerciseType]!
   }
 
   type Mutation {

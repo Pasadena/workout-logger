@@ -25,7 +25,7 @@ let workouts: Workout[] = [
       {
         id: "dsdddddddd",
         order: 1,
-        type: "push-up",
+        type: types[0],
         sets: [
           {
             order: 1,
@@ -50,6 +50,16 @@ export const resolvers = {
     },
     exerciseTypes: (obj, args, context, info) => {
       return types;
+    },
+    searchExerciseTypes: (
+      obj,
+      args: { partialName: string },
+      context,
+      info
+    ) => {
+      return types.filter((type: ExerciseType) =>
+        type.name.includes(args.partialName)
+      );
     },
   },
   Workout: {

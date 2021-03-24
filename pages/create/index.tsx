@@ -7,12 +7,16 @@ import WorkoutForm from "components/WorkoutForm";
 import { Workout, WorkoutExercise } from "types/types";
 import { appendToCache } from "apollo/cache";
 
+const emptyExercise = (order = 1) => ({
+  type: null,
+  order,
+  sets: [{ order: 1, reps: 0, weight: 0 }],
+});
+
 export default function CreateWorkout() {
   const router = useRouter();
   const [workout, setWorkout] = React.useState<Workout>({
-    exercises: [
-      { type: "", order: 1, sets: [{ order: 1, reps: 0, weight: 0 }] },
-    ],
+    exercises: [emptyExercise()],
   });
 
   const [addWorkout, { data: addWorkoutResponse }] = useMutation<{
@@ -50,17 +54,7 @@ export default function CreateWorkout() {
       ...workout.exercises.map((item: WorkoutExercise) => item.order)
     );
     const withNewExercise = workout.exercises.concat([
-      {
-        type: "",
-        order: maxOrder + 1,
-        sets: [
-          {
-            order: 1,
-            reps: 0,
-            weight: 0,
-          },
-        ],
-      },
+      emptyExercise(maxOrder + 1),
     ]);
     setWorkout({ ...workout, exercises: withNewExercise });
   }, [workout, setWorkout]);

@@ -19,7 +19,10 @@ export const WorkoutQuery = gql`
       exercises {
         id
         order
-        type
+        type {
+          id
+          name
+        }
         sets {
           order
           reps
@@ -68,6 +71,15 @@ export const ExerciseTypesQuery = gql`
 export const CreateExerciseTypeMutation = gql`
   mutation CreateExerciseTypeMutation($name: String!) {
     saveExerciseType(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export const SearchExerciseTypesQuery = gql`
+  query SearchExerciseTypesQuery($partialName: String) {
+    searchExerciseTypes(partialName: $partialName) {
       id
       name
     }

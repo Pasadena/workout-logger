@@ -1,11 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { FiPlus } from "react-icons/fi";
-import { WorkoutExercise, WorkoutSet } from "types/types";
+import { useLazyQuery } from "@apollo/client";
+
+import { ExerciseType, WorkoutExercise, WorkoutSet } from "types/types";
 
 import Set from "./Set";
 import InputField from "components/InputField";
-import { PrimaryButton } from "components/Button";
+import { SearchExerciseTypesQuery } from "apollo/queries";
+import Combobox from "components/Combobox";
 
 const Container = styled.div`
   display: flex;
@@ -46,9 +49,12 @@ interface Props {
 }
 
 const Exercise = ({ exercise, order, onExerciseModified }: Props) => {
+  const [seachTypes, result] = useLazyQuery<{
+    searchExerciseTypes: ExerciseType[];
+  }>(SearchExerciseTypesQuery);
   const setExerciseType = React.useCallback(
-    (e) => {
-      onExerciseModified({ ...exercise, type: e.target.value });
+    (type: ExerciseType) => {
+      onExerciseModified({ ...exercise, type });
     },
     [exercise]
   );
@@ -74,16 +80,20 @@ const Exercise = ({ exercise, order, onExerciseModified }: Props) => {
     },
     [exercise]
   );
+  const searchTypes = React.useCallback((partialName: string) => {
+    seachTypes({ variables: { partialName } });
+  }, []);
   return (
     <Container>
       <Title>{order}.</Title>
       <Content>
-        <InputField
+        <Combobox
           label="Type"
-          onChange={setExerciseType}
-          inputProps={{
-            value: exercise.type,
-          }}
+          value={exercise.type?.name}
+          optionSelected={(type: ExerciseType) => setExerciseType(type)}
+          optionRenderer={(item: ExerciseType) => item.name}
+          searchTermChanged={searchTypes}
+          fetchResult={{ ...result, data: result.data?.searchExerciseTypes }}
         />
         <SetsTitle>Sets (reps / weight)</SetsTitle>
         {exercise.sets.map((set: WorkoutSet, index: number) => (
