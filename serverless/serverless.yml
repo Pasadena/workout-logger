@@ -54,34 +54,6 @@ provider:
         - dynamoDb:GetItem
         - dynamoDB:PutItem
       Resource: "*"
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
 
 functions:
   workouts:
@@ -111,6 +83,12 @@ functions:
       - httpApi:
           path: /workouts/{id}
           method: put
+  deleteWorkout:
+    handler: api/workouts.delete
+    events:
+      - httpApi:
+          path: /workouts/{id}
+          method: delete
 # you can add CloudFormation resource templates here
 resources:
   Resources:

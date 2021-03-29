@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import { FiX } from "react-icons/fi";
 
@@ -10,6 +11,8 @@ const WorkoutContainer = styled.div`
     transform: scale(1.02);
   }
 `;
+
+const SelectableContainer = styled.div``;
 
 const DeleteIcon = styled(FiX)`
   margin-left: 2rem;
@@ -35,8 +38,10 @@ export default function DeletableTile({
   onDelete,
 }: Props) {
   return (
-    <WorkoutContainer onClick={onTileClicked}>
-      {children}
+    <WorkoutContainer>
+      <SelectableContainer onClick={onTileClicked}>
+        {children}
+      </SelectableContainer>
       <DeleteIcon onClick={onDelete} />
     </WorkoutContainer>
   );

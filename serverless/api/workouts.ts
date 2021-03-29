@@ -33,6 +33,10 @@ module.exports.item = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
+    const id = event.pathParameters?.id;
+    if (!id) {
+      throw new Error("Id is required for querying single workout");
+    }
     const params = {
       TableName: WORKOUTS_TABLE,
       Key: {
@@ -88,6 +92,31 @@ module.exports.update = async (
     return {
       statusCode: 200,
       body: JSON.stringify(workout),
+    };
+  } catch (err) {
+    console.log("cannot update workout", err);
+    throw err;
+  }
+};
+
+module.exports.delete = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const id = event.pathParameters?.id;
+    if (!id) {
+      throw new Error("Id is required for deleting workout");
+    }
+    const params = {
+      TableName: WORKOUTS_TABLE,
+      Key: {
+        id,
+      },
+    };
+    await dynamoDB.delete(params).promise();
+    return {
+      statusCode: 200,
+      body: JSON.stringify(id),
     };
   } catch (err) {
     console.log("cannot update workout", err);

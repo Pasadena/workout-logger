@@ -137,10 +137,24 @@ export const resolvers = {
         throw err;
       }
     },
-    deleteWorkout: (_, { id }: { id: string }) => {
-      workouts = workouts.filter((item: Workout) => item.id !== id);
-      console.log("ID: ", id);
-      return id;
+    deleteWorkout: async (_, { id }: { id: string }) => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/dev/workouts/${id}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.status !== 200) {
+          console.log("Error deleting workout", response);
+          throw new Error(`Cannot delete workout ${id}`);
+        }
+        const data = await response.json();
+        return data;
+      } catch (err: any) {
+        console.log("Err", err);
+        throw err;
+      }
     },
     saveExerciseType: (_, args: { name: string }) => {
       console.log("Creating new type", args.name);
