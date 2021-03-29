@@ -32,3 +32,10 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+#serverless
+serverless/.build
+serverless/.dynamodb
+
+types/types.js
+types/types.js.map

@@ -40,13 +40,28 @@ let workouts: Workout[] = [
 
 export const resolvers = {
   Query: {
-    workouts: (obj, args, context, info) => {
+    workouts: async (obj, args, context, info) => {
       console.log("workouts called");
-      return workouts;
+      const response = await fetch("http://localhost:4000/dev/workouts");
+      if (response.status !== 200) {
+        console.log("Error in workouts", response);
+        throw new Error("Cannot fetch workouts!");
+      }
+      const data = await response.json();
+      console.log("Workouts", data);
+      return data;
     },
-    workout: (obj, args, context, info) => {
-      const workout = workouts.find((item: Workout) => item.id === args.id);
-      return workout;
+    workout: async (obj, args, context, info) => {
+      const response = await fetch(
+        `http://localhost:4000/dev/workouts/${args.id}`
+      );
+      if (response.status !== 200) {
+        console.log("Error in workout", response);
+        throw new Error(`Cannot fetch workout ${args.id}`);
+      }
+      const data = await response.json();
+      console.log("Workout", data);
+      return data;
     },
     exerciseTypes: (obj, args, context, info) => {
       return types;
@@ -74,15 +89,27 @@ export const resolvers = {
     id: (obj: unknown) => (obj as { id: string }).id,
   },
   Mutation: {
-    saveWorkout: (_, { workout }: { workout: Workout }) => {
-      console.log("Saving workout", workout);
-      workout.id = (++currWorkoutId).toString();
-      workout.date = format(new Date(), "dd.MM.yyyy");
-      workout.exercises.forEach((exercise: WorkoutExercise) => {
-        exercise.id = (++currExerciseId).toString();
-      });
-      workouts.push(workout);
-      return workout;
+    saveWorkout: async (_, { workout }: { workout: Workout }) => {
+      try {
+        console.log("Saving workout", workout);
+        const response = await fetch("http://localhost:4000/dev/workouts", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(workout),
+        });
+        if (response.status !== 201) {
+          console.log("Error posting workout", response);
+          throw new Error("Cannot create new workout");
+        }
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        console.log("Err", err);
+        throw err;
+      }
     },
     updateWorkout: (
       parent: any,
