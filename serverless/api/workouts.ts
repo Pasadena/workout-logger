@@ -1,17 +1,22 @@
 "use strict";
-const AWS = require("aws-sdk");
-const { v4: uuidv4 } = require("uuid");
-const { format } = require("date-fns");
+import * as AWS from "aws-sdk";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
+
+const WORKOUTS_TABLE = process.env.WORKOUTS_TABLE as string;
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient({
   region: "localhost",
   endpoint: "http://localhost:8000",
 });
 
-module.exports.list = async (event, context, callback) => {
+module.exports.list = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   try {
     const params = {
-      TableName: process.env.WORKOUTS_TABLE,
+      TableName: WORKOUTS_TABLE,
     };
     const result = await dynamoDB.scan(params).promise();
     return {
@@ -24,12 +29,14 @@ module.exports.list = async (event, context, callback) => {
   }
 };
 
-module.exports.item = async (event) => {
+module.exports.item = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   try {
     const params = {
-      TableName: process.env.WORKOUTS_TABLE,
+      TableName: WORKOUTS_TABLE,
       Key: {
-        id: event.pathParameters.id,
+        id: event.pathParameters?.id,
       },
     };
     const result = await dynamoDB.get(params).promise();
@@ -43,25 +50,47 @@ module.exports.item = async (event) => {
   }
 };
 
-module.exports.create = async (event) => {
+module.exports.create = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   try {
-    const workout = JSON.parse(event.body);
+    const workout = JSON.parse(event.body as string);
     workout.id = uuidv4();
     workout.date = format(new Date(), "dd.MM.yyyy");
     workout.exercises.forEach((exercise) => {
       exercise.id = uuidv4();
     });
     const params = {
-      TableName: process.env.WORKOUTS_TABLE,
+      TableName: WORKOUTS_TABLE,
       Item: workout,
     };
-    const result = await dynamoDB.put(params).promise();
+    await dynamoDB.put(params).promise();
     return {
       statusCode: 201,
       body: JSON.stringify(workout),
     };
   } catch (err) {
-    console.log("cannot load workouts", err);
+    console.log("cannot create workout", err);
+    throw err;
+  }
+};
+
+module.exports.update = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const workout = JSON.parse(event.body as string);
+    const params = {
+      TableName: WORKOUTS_TABLE,
+      Item: workout,
+    };
+    await dynamoDB.put(params).promise();
+    return {
+      statusCode: 200,
+      body: JSON.stringify(workout),
+    };
+  } catch (err) {
+    console.log("cannot update workout", err);
     throw err;
   }
 };

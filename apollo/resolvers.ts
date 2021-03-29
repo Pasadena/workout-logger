@@ -111,19 +111,31 @@ export const resolvers = {
         throw err;
       }
     },
-    updateWorkout: (
-      parent: any,
-      args: { workout: Workout },
-      context: any,
-      info: any
-    ) => {
-      const updated = args.workout;
-      console.log("Updating workout", updated);
-      updated.updated_at = format(new Date(), "dd.MM.yyyy HH:mm:ss");
-      workouts = workouts.map((item: Workout) =>
-        item.id !== updated.id ? item : updated
-      );
-      return updated;
+    updateWorkout: async (parent: any, args: { workout: Workout }) => {
+      try {
+        const payload = args.workout;
+        console.log("Updating workout", payload);
+        const response = await fetch(
+          `http://localhost:4000/dev/workouts/${payload.id}`,
+          {
+            method: "PUT",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        if (response.status !== 200) {
+          console.log("Error updating workout", response);
+          throw new Error(`Cannot update workout ${payload.id}`);
+        }
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        console.log("Err", err);
+        throw err;
+      }
     },
     deleteWorkout: (_, { id }: { id: string }) => {
       workouts = workouts.filter((item: Workout) => item.id !== id);
