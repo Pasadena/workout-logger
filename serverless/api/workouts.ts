@@ -4,12 +4,18 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 
+import { okResponse } from "../utils/http";
+import { byIdParameters, withItemParameters } from "../utils/db";
+
 const WORKOUTS_TABLE = process.env.WORKOUTS_TABLE as string;
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient({
   region: "localhost",
   endpoint: "http://localhost:8000",
 });
+
+const byId = byIdParameters(WORKOUTS_TABLE);
+const withItem = withItemParameters(WORKOUTS_TABLE);
 
 module.exports.list = async (
   event: APIGatewayProxyEvent
@@ -19,10 +25,7 @@ module.exports.list = async (
       TableName: WORKOUTS_TABLE,
     };
     const result = await dynamoDB.scan(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result.Items),
-    };
+    return okResponse(result.Items);
   } catch (err) {
     console.log("cannot load workouts", err);
     throw err;
@@ -37,17 +40,8 @@ module.exports.item = async (
     if (!id) {
       throw new Error("Id is required for querying single workout");
     }
-    const params = {
-      TableName: WORKOUTS_TABLE,
-      Key: {
-        id: event.pathParameters?.id,
-      },
-    };
-    const result = await dynamoDB.get(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result.Item),
-    };
+    const result = await dynamoDB.get(byId(id)).promise();
+    return okResponse(result.Item);
   } catch (err) {
     console.log("cannot load workouts", err);
     throw err;
@@ -64,15 +58,8 @@ module.exports.create = async (
     workout.exercises.forEach((exercise) => {
       exercise.id = uuidv4();
     });
-    const params = {
-      TableName: WORKOUTS_TABLE,
-      Item: workout,
-    };
-    await dynamoDB.put(params).promise();
-    return {
-      statusCode: 201,
-      body: JSON.stringify(workout),
-    };
+    await dynamoDB.put(withItem(workout)).promise();
+    return okResponse(workout, 201);
   } catch (err) {
     console.log("cannot create workout", err);
     throw err;
@@ -84,15 +71,8 @@ module.exports.update = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const workout = JSON.parse(event.body as string);
-    const params = {
-      TableName: WORKOUTS_TABLE,
-      Item: workout,
-    };
-    await dynamoDB.put(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify(workout),
-    };
+    await dynamoDB.put(withItem(workout)).promise();
+    return okResponse(workout);
   } catch (err) {
     console.log("cannot update workout", err);
     throw err;
@@ -107,17 +87,8 @@ module.exports.delete = async (
     if (!id) {
       throw new Error("Id is required for deleting workout");
     }
-    const params = {
-      TableName: WORKOUTS_TABLE,
-      Key: {
-        id,
-      },
-    };
-    await dynamoDB.delete(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify(id),
-    };
+    await dynamoDB.delete(byId(id)).promise();
+    return okResponse(id);
   } catch (err) {
     console.log("cannot update workout", err);
     throw err;
