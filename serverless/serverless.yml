@@ -64,31 +64,31 @@ functions:
     events:
       - httpApi:
           path: /workouts
-          method: get
+          method: GET
   workout:
     handler: api/workouts.item
     events:
       - httpApi:
           path: /workouts/{id}
-          method: get
+          method: GET
   createWorkout:
     handler: api/workouts.create
     events:
       - httpApi:
           path: /workouts
-          method: post
+          method: POST
   updateWorkout:
     handler: api/workouts.update
     events:
       - httpApi:
           path: /workouts/{id}
-          method: put
+          method: PUT
   deleteWorkout:
     handler: api/workouts.delete
     events:
       - httpApi:
           path: /workouts/{id}
-          method: delete
+          method: DELETE
 # you can add CloudFormation resource templates here
 resources:
   Resources:
