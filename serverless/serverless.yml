@@ -44,8 +44,8 @@ provider:
   region: eu-north-1
 
   environment:
-    WORKOUTS_TABLE: Workouts
-    EXERCISE_TYPES_TABLE: ExerciseType
+    WORKOUTS_TABLE: "workouts-${opt:stage, 'local'}"
+    EXERCISE_TYPES_TABLE: "exerciseType-${opt:stage, 'local'}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -95,7 +95,7 @@ resources:
     workoutsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: Workouts
+        TableName: ${self:provider.environment.WORKOUTS_TABLE}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -108,7 +108,7 @@ resources:
     exeerciseTypeTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ExerciseType
+        TableName: ${self:provider.environment.EXERCISE_TYPES_TABLE}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

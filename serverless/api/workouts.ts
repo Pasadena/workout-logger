@@ -9,10 +9,12 @@ import { byIdParameters, withItemParameters } from "../utils/db";
 
 const WORKOUTS_TABLE = process.env.WORKOUTS_TABLE as string;
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient({
-  region: "localhost",
-  endpoint: "http://localhost:8000",
-});
+const dynamoDB = process.env.IS_OFFLINE
+  ? new AWS.DynamoDB.DocumentClient({
+      region: "localhost",
+      endpoint: "http://localhost:8000",
+    })
+  : new AWS.DynamoDB.DocumentClient();
 
 const byId = byIdParameters(WORKOUTS_TABLE);
 const withItem = withItemParameters(WORKOUTS_TABLE);
