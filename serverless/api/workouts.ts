@@ -5,16 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 
 import { okResponse } from "../utils/http";
-import { byIdParameters, withItemParameters } from "../utils/db";
+import dynamoDB, { byIdParameters, withItemParameters } from "../utils/db";
 
 const WORKOUTS_TABLE = process.env.WORKOUTS_TABLE as string;
-
-const dynamoDB = process.env.IS_OFFLINE
-  ? new AWS.DynamoDB.DocumentClient({
-      region: "localhost",
-      endpoint: "http://localhost:8000",
-    })
-  : new AWS.DynamoDB.DocumentClient();
 
 const byId = byIdParameters(WORKOUTS_TABLE);
 const withItem = withItemParameters(WORKOUTS_TABLE);

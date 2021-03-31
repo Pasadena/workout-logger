@@ -25,7 +25,7 @@ export const resolvers = {
       return request(`http://localhost:4000/dev/workouts/${args.id}`, "GET");
     },
     exerciseTypes: (obj, args, context, info) => {
-      return types;
+      return request("http://localhost:4000/dev/exercisetypes", "GET");
     },
     searchExerciseTypes: (
       obj,
