@@ -23,3 +23,16 @@ module.exports.create = async (
 ): Promise<APIGatewayProxyResult> => {
   return exerciseTypePostHandler(event);
 };
+
+module.exports.search = async (event: APIGatewayProxyEvent) => {
+  const searchTerm = event.pathParameters?.name;
+  const params = {
+    TableName: EXERCISE_TYPES_TABLE,
+  };
+  const result = await dynamoDB.scan(params).promise(); // TODO: replace with query at some point
+  return okResponse(
+    result.Items.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+};

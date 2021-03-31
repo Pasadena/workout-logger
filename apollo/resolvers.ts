@@ -33,8 +33,9 @@ export const resolvers = {
       context,
       info
     ) => {
-      return types.filter((type: ExerciseType) =>
-        type.name.includes(args.partialName)
+      return request(
+        `http://localhost:4000/dev/exercisetypes/${args.partialName}`,
+        "GET"
       );
     },
   },

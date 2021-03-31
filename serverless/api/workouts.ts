@@ -36,7 +36,7 @@ module.exports.list = async (
     console.log("cannot load workouts", err);
     throw err;
   }
-});
+};
 
 module.exports.item = async (
   event: APIGatewayProxyEvent

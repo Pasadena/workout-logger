@@ -101,6 +101,12 @@ functions:
       - httpApi:
           path: /exercisetypes
           method: POST
+  searchTypes:
+    handler: api/exerciseTypes.search
+    events:
+      - httpApi:
+          path: /exercisetypes/{name}
+          method: GET
 # you can add CloudFormation resource templates here
 resources:
   Resources:
