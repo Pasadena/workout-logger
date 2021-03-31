@@ -33,3 +33,7 @@ export const request = async (
     throw err;
   }
 };
+
+export const post = async (url: string, payload: any) => {
+  return request(url, "POST", payload, (status: number) => status === 201);
+};

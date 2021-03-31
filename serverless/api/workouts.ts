@@ -6,11 +6,22 @@ import { format } from "date-fns";
 
 import { okResponse } from "../utils/http";
 import dynamoDB, { byIdParameters, withItemParameters } from "../utils/db";
+import { postHandler } from "../utils/handlers";
 
 const WORKOUTS_TABLE = process.env.WORKOUTS_TABLE as string;
 
 const byId = byIdParameters(WORKOUTS_TABLE);
 const withItem = withItemParameters(WORKOUTS_TABLE);
+
+const addServerData = (workout: any) => {
+  workout.date = format(new Date(), "dd.MM.yyyy");
+  workout.exercises.forEach((exercise) => {
+    exercise.id = uuidv4();
+  });
+  return workout;
+};
+
+const workoutPostHandler = postHandler(WORKOUTS_TABLE, addServerData);
 
 module.exports.list = async (
   event: APIGatewayProxyEvent
@@ -25,7 +36,7 @@ module.exports.list = async (
     console.log("cannot load workouts", err);
     throw err;
   }
-};
+});
 
 module.exports.item = async (
   event: APIGatewayProxyEvent
@@ -46,19 +57,7 @@ module.exports.item = async (
 module.exports.create = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  try {
-    const workout = JSON.parse(event.body as string);
-    workout.id = uuidv4();
-    workout.date = format(new Date(), "dd.MM.yyyy");
-    workout.exercises.forEach((exercise) => {
-      exercise.id = uuidv4();
-    });
-    await dynamoDB.put(withItem(workout)).promise();
-    return okResponse(workout, 201);
-  } catch (err) {
-    console.log("cannot create workout", err);
-    throw err;
-  }
+  return workoutPostHandler(event);
 };
 
 module.exports.update = async (

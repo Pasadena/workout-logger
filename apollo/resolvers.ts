@@ -1,6 +1,6 @@
 import { ExerciseType, Workout, WorkoutExercise } from "types/types";
 
-import { request } from "core/request";
+import { request, post } from "core/request";
 
 let currExerciseId = 0;
 
@@ -52,12 +52,7 @@ export const resolvers = {
   Mutation: {
     saveWorkout: async (_, { workout }: { workout: Workout }) => {
       console.log("Saving workout", workout);
-      return request(
-        "http://localhost:4000/dev/workouts",
-        "POST",
-        workout,
-        (status: number) => status === 201
-      );
+      return post("http://localhost:4000/dev/workouts", workout);
     },
     updateWorkout: async (parent: any, args: { workout: Workout }) => {
       const payload = args.workout;
@@ -73,13 +68,10 @@ export const resolvers = {
       return request(`http://localhost:4000/dev/workouts/${id}`, "DELETE");
     },
     saveExerciseType: (_, args: { name: string }) => {
-      console.log("Creating new type", args.name);
-      const newExerciseType = {
-        id: (++currExerciseId).toString(),
+      console.log("Saving exercise type", args.name);
+      return post("http://localhost:4000/dev/exercisetypes/", {
         name: args.name,
-      };
-      types.push(newExerciseType);
-      return newExerciseType;
+      });
     },
   },
 };
