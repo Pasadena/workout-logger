@@ -107,6 +107,12 @@ functions:
       - httpApi:
           path: /exercisetypes/{name}
           method: GET
+  deleteExerciseType:
+    handler: api/exerciseTypes.remove
+    events:
+      - httpApi:
+          path: /exercisetypes/{id}
+          method: DELETE
 # you can add CloudFormation resource templates here
 resources:
   Resources:

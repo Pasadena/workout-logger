@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 import { okResponse } from "../utils/http";
 import dynamoDB, { byIdParameters, withItemParameters } from "../utils/db";
-import { postHandler } from "../utils/handlers";
+import { deleteHandler, postHandler } from "../utils/handlers";
 
 const WORKOUTS_TABLE = process.env.WORKOUTS_TABLE as string;
 
@@ -22,6 +22,7 @@ const addServerData = (workout: any) => {
 };
 
 const workoutPostHandler = postHandler(WORKOUTS_TABLE, addServerData);
+const workoutDeleteHandler = deleteHandler(WORKOUTS_TABLE);
 
 module.exports.list = async (
   event: APIGatewayProxyEvent
@@ -76,15 +77,5 @@ module.exports.update = async (
 module.exports.delete = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  try {
-    const id = event.pathParameters?.id;
-    if (!id) {
-      throw new Error("Id is required for deleting workout");
-    }
-    await dynamoDB.delete(byId(id)).promise();
-    return okResponse(id);
-  } catch (err) {
-    console.log("cannot update workout", err);
-    throw err;
-  }
+  return workoutDeleteHandler(event);
 };

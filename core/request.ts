@@ -37,3 +37,7 @@ export const request = async (
 export const post = async (url: string, payload: any) => {
   return request(url, "POST", payload, (status: number) => status === 201);
 };
+
+export const deleteRequest = async (url: string) => {
+  return request(url, "DELETE");
+};

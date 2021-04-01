@@ -1,7 +1,13 @@
-import { useQuery } from "@apollo/client";
+import {
+  ApolloCache,
+  FetchResult,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import styled from "styled-components";
 
-import { ExerciseTypesQuery } from "apollo/queries";
+import { ExerciseTypesQuery, DeleteExerciseTypeMutation } from "apollo/queries";
+import { evictFromCache } from "apollo/cache";
 import { ExerciseType } from "types/types";
 import { initClient } from "apollo/client";
 import TypeForm from "pages/admin/TypeForm";
@@ -45,6 +51,13 @@ export default function AdminView() {
     ExerciseTypesQuery
   );
 
+  const [deleteExerciseType] = useMutation(DeleteExerciseTypeMutation, {
+    update: (
+      cache: ApolloCache<{ deleteExerciseType: string }>,
+      result: FetchResult<{ deleteExerciseType: string }>
+    ) => evictFromCache(cache, "exerciseTypes", result.data.deleteExerciseType),
+  });
+
   if (error) {
     return <div>Error!</div>;
   }
@@ -62,7 +75,7 @@ export default function AdminView() {
         {data.exerciseTypes.map((type: ExerciseType) => (
           <DeletableTile
             key={type.id}
-            onDelete={() => {}}
+            onDelete={() => deleteExerciseType({ variables: { id: type.id } })}
             onTileClicked={() => {}}
           >
             <Type>{type.name}</Type>

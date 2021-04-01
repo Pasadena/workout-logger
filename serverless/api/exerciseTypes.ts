@@ -2,11 +2,12 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
 import { okResponse } from "../utils/http";
 import dynamoDB from "../utils/db";
-import { postHandler } from "../utils/handlers";
+import { deleteHandler, postHandler } from "../utils/handlers";
 
 const EXERCISE_TYPES_TABLE = process.env.EXERCISE_TYPES_TABLE as string;
 
 const exerciseTypePostHandler = postHandler(EXERCISE_TYPES_TABLE);
+const exerciseTypeDeleteHandler = deleteHandler(EXERCISE_TYPES_TABLE);
 
 module.exports.list = async (
   event: APIGatewayProxyEvent
@@ -24,7 +25,9 @@ module.exports.create = async (
   return exerciseTypePostHandler(event);
 };
 
-module.exports.search = async (event: APIGatewayProxyEvent) => {
+module.exports.search = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   const searchTerm = event.pathParameters?.name;
   const params = {
     TableName: EXERCISE_TYPES_TABLE,
@@ -35,4 +38,10 @@ module.exports.search = async (event: APIGatewayProxyEvent) => {
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
+};
+
+module.exports.remove = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  return exerciseTypeDeleteHandler(event);
 };

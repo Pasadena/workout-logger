@@ -1,19 +1,6 @@
-import { ExerciseType, Workout, WorkoutExercise } from "types/types";
+import { Workout, WorkoutExercise } from "types/types";
 
-import { request, post } from "core/request";
-
-let currExerciseId = 0;
-
-let types: ExerciseType[] = [
-  {
-    id: "111-222",
-    name: "Push-up",
-  },
-  {
-    id: "111-333",
-    name: "Chin-up",
-  },
-];
+import { request, post, deleteRequest } from "core/request";
 
 export const resolvers = {
   Query: {
@@ -73,6 +60,9 @@ export const resolvers = {
       return post("http://localhost:4000/dev/exercisetypes/", {
         name: args.name,
       });
+    },
+    deleteExerciseType: (_, { id }: { id: string }) => {
+      return deleteRequest(`http://localhost:4000/dev/exercisetypes/${id}`);
     },
   },
 };

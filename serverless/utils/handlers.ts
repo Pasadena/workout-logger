@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { v4 as uuidv4 } from "uuid";
 
 import { okResponse } from "../utils/http";
-import dynamoDB, { withItemParameters } from "./db";
+import dynamoDB, { withItemParameters, byIdParameters } from "./db";
 
 export function postHandler<T>(
   tableName: string,
@@ -22,7 +22,26 @@ export function postHandler<T>(
       await dynamoDB.put(withItem(transformedPayload)).promise();
       return okResponse(payload, 201);
     } catch (err) {
-      console.log("cannot create workout", err);
+      console.log(`Cannot insert data to table ${tableName}`, err);
+      throw err;
+    }
+  };
+}
+
+export function deleteHandler(
+  tableName: string
+): (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult> {
+  const byId = byIdParameters(tableName);
+  return async (event) => {
+    try {
+      const id = event.pathParameters?.id;
+      if (!id) {
+        throw new Error("Id is required for deleting workout");
+      }
+      await dynamoDB.delete(byId(id)).promise();
+      return okResponse(id);
+    } catch (err) {
+      console.log(`Cannot delete data from table ${tableName}`, err);
       throw err;
     }
   };

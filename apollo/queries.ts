@@ -85,3 +85,9 @@ export const SearchExerciseTypesQuery = gql`
     }
   }
 `;
+
+export const DeleteExerciseTypeMutation = gql`
+  mutation DeleteExerciseTypeMutation($id: ID!) {
+    deleteExerciseType(id: $id)
+  }
+`;
