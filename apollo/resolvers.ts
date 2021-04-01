@@ -4,26 +4,18 @@ import { request, post, deleteRequest } from "core/request";
 
 export const resolvers = {
   Query: {
-    workouts: async (obj, args, context, info) => {
+    workouts: async () => {
       console.log("workouts called");
-      return request("http://localhost:4000/dev/workouts", "GET");
+      return request("workouts", "GET");
     },
-    workout: async (obj, args, context, info) => {
-      return request(`http://localhost:4000/dev/workouts/${args.id}`, "GET");
+    workout: async (_, { id }: { id: string }) => {
+      return request(`workouts/${id}`, "GET");
     },
-    exerciseTypes: (obj, args, context, info) => {
-      return request("http://localhost:4000/dev/exercisetypes", "GET");
+    exerciseTypes: () => {
+      return request("exercisetypes", "GET");
     },
-    searchExerciseTypes: (
-      obj,
-      args: { partialName: string },
-      context,
-      info
-    ) => {
-      return request(
-        `http://localhost:4000/dev/exercisetypes/${args.partialName}`,
-        "GET"
-      );
+    searchExerciseTypes: (_, args: { partialName: string }) => {
+      return request(`exercisetypes/${args.partialName}`, "GET");
     },
   },
   Workout: {
@@ -40,29 +32,25 @@ export const resolvers = {
   Mutation: {
     saveWorkout: async (_, { workout }: { workout: Workout }) => {
       console.log("Saving workout", workout);
-      return post("http://localhost:4000/dev/workouts", workout);
+      return post("workouts", workout);
     },
-    updateWorkout: async (parent: any, args: { workout: Workout }) => {
+    updateWorkout: async (_: any, args: { workout: Workout }) => {
       const payload = args.workout;
       console.log("Updating workout", payload);
-      return request(
-        `http://localhost:4000/dev/workouts/${payload.id}`,
-        "PUT",
-        payload
-      );
+      return request(`workouts/${payload.id}`, "PUT", payload);
     },
     deleteWorkout: async (_, { id }: { id: string }) => {
       console.log("Deleting workout", id);
-      return request(`http://localhost:4000/dev/workouts/${id}`, "DELETE");
+      return request(`workouts/${id}`, "DELETE");
     },
     saveExerciseType: (_, args: { name: string }) => {
       console.log("Saving exercise type", args.name);
-      return post("http://localhost:4000/dev/exercisetypes/", {
+      return post("exercisetypes/", {
         name: args.name,
       });
     },
     deleteExerciseType: (_, { id }: { id: string }) => {
-      return deleteRequest(`http://localhost:4000/dev/exercisetypes/${id}`);
+      return deleteRequest(`exercisetypes/${id}`);
     },
   },
 };

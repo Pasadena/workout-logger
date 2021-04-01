@@ -1,3 +1,7 @@
+const BASE_URL = process.env.BASE_URL || "http://localhost:4000/dev/";
+
+export const formatUrl = (pathFragment: string) => `${BASE_URL}${pathFragment}`;
+
 const requestConfig = (method: string, payload: unknown) => {
   if (["POST", "PUT"].includes(method)) {
     return {
@@ -13,7 +17,7 @@ const requestConfig = (method: string, payload: unknown) => {
 };
 
 export const request = async (
-  url: string,
+  path: string,
   method: string,
   payload?: any,
   responseValidator?: (status: number) => boolean
@@ -21,6 +25,7 @@ export const request = async (
   try {
     const isValidResponse =
       responseValidator || ((status: number) => status === 200);
+    const url = formatUrl(path);
     const response = await fetch(url, requestConfig(method, payload));
     if (!isValidResponse(response.status)) {
       console.log("Error in request", response);
@@ -34,10 +39,10 @@ export const request = async (
   }
 };
 
-export const post = async (url: string, payload: any) => {
-  return request(url, "POST", payload, (status: number) => status === 201);
+export const post = async (path: string, payload: any) => {
+  return request(path, "POST", payload, (status: number) => status === 201);
 };
 
-export const deleteRequest = async (url: string) => {
-  return request(url, "DELETE");
+export const deleteRequest = async (path: string) => {
+  return request(path, "DELETE");
 };
