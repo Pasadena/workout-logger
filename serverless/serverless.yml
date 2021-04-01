@@ -41,7 +41,7 @@ provider:
   lambdaHashingVersion: 20201221
   # you can overwrite defaults here
   #  stage: dev
-  region: eu-north-1
+  region: eu-west-1
 
   environment:
     WORKOUTS_TABLE: "workouts-${opt:stage, 'local'}"
