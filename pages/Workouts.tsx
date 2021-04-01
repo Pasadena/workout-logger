@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { FiX } from "react-icons/fi";
-import { ApolloCache, useMutation } from "@apollo/client";
+import { ApolloCache, FetchResult, useMutation } from "@apollo/client";
 
 import { RemoveWorkoutMutation } from "apollo/queries";
+import { evictFromCache } from "apollo/cache";
 import { Workout } from "types/types";
 import { useRouter } from "next/router";
 import DeletableTile from "components/DeletableTile";
@@ -27,16 +28,6 @@ const Title = styled.h2`
 
 const WorkoutCount = styled.span`
   font-size: 0.8rem;
-`;
-
-const WorkoutContainer = styled.div`
-  display: flex;
-  align-items: center;
-  transition: 0.2s ease-in;
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.02);
-  }
 `;
 
 const WorkoutTile = styled.div`
@@ -72,24 +63,14 @@ interface Props {
   workouts: Workout[];
 }
 
-function updateCache(cache: ApolloCache<Workout>, result: any) {
-  cache.modify({
-    fields: {
-      workouts(existingWorkouts = []) {
-        return existingWorkouts.filter(
-          (item: Workout) => item.id !== result.deleteWorkout
-        );
-      },
-    },
-  });
-}
-
 const Workouts = ({ workouts }: Props) => {
   const router = useRouter();
-  const [
-    removeWorkout,
-    { data: deletedData },
-  ] = useMutation(RemoveWorkoutMutation, { update: updateCache });
+  const [removeWorkout] = useMutation(RemoveWorkoutMutation, {
+    update: (
+      cache: ApolloCache<{ deleteWorkout: string }>,
+      result: FetchResult<{ deleteWorkout: string }>
+    ) => evictFromCache(cache, "workouts", result.data.deleteWorkout),
+  });
   return (
     <Container>
       <Header>
