@@ -27,6 +27,7 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
         run: |
           npm install
+          npm run install-serverless
           npm run build
 
       - name: Deploy to S3
