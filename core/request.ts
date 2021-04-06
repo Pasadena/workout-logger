@@ -1,4 +1,4 @@
-const BASE_URL = process.env.BASE_URL || "http://localhost:4000/dev/";
+const BASE_URL = process.env.API_URL || "http://localhost:4000/dev/";
 
 export const formatUrl = (pathFragment: string) => `${BASE_URL}${pathFragment}`;
 
