@@ -10,7 +10,7 @@ import { ExerciseTypesQuery, DeleteExerciseTypeMutation } from "apollo/queries";
 import { evictFromCache } from "apollo/cache";
 import { ExerciseType } from "types/types";
 import { initClient } from "apollo/client";
-import TypeForm from "pages/admin/TypeForm";
+import TypeForm from "components/admin/TypeForm";
 import DeletableTile from "components/DeletableTile";
 
 const Container = styled.div`

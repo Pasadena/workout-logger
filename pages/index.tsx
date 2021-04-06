@@ -4,7 +4,7 @@ import { initClient } from "apollo/client";
 
 import { WorkoutsQuery } from "apollo/queries";
 import Link from "components/Link";
-import Workouts from "./Workouts";
+import Workouts from "../components/Workouts";
 
 const Container = styled.div`
   padding: 1rem;

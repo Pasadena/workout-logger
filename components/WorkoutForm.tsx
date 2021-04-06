@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { Workout, WorkoutExercise } from "types/types";
 import Link from "components/Link";
 import { Button, PrimaryButton } from "components/Button";
-import Exercise from "pages/create/Exercise";
+import Exercise from "components/create/Exercise";
 
 const Container = styled.div`
   padding: 2rem;

@@ -6,7 +6,6 @@ import { useLazyQuery } from "@apollo/client";
 import { ExerciseType, WorkoutExercise, WorkoutSet } from "types/types";
 
 import Set from "./Set";
-import InputField from "components/InputField";
 import { SearchExerciseTypesQuery } from "apollo/queries";
 import Combobox from "components/Combobox";
 
