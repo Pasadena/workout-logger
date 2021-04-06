@@ -27,7 +27,7 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
         run: |
           npm install
-          npm build
+          npm run build
 
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
