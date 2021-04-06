@@ -11,6 +11,8 @@ let apolloClient: ApolloClient<any> = null;
 
 const isSsr = typeof window === "undefined";
 
+const gqlUrl = process.env.GQL_URL || "http://localhost:3000";
+
 const removeTypenameMiddleware = new ApolloLink((operation, forward) => {
   if (operation.variables) {
     const omitTypename = (key, value) =>
@@ -28,7 +30,7 @@ function createApolloClient() {
     link: concat(
       removeTypenameMiddleware,
       new HttpLink({
-        uri: "http://localhost:3000/api/graphql",
+        uri: `${gqlUrl}/api/graphql`,
         credentials: "same-origin",
       })
     ),
