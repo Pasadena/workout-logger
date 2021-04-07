@@ -1,16 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import { FiPlusCircle } from "react-icons/fi";
+import { FiPlusCircle, FiCheck } from "react-icons/fi";
 import { format } from "date-fns";
 import { Workout, WorkoutExercise } from "types/types";
-import Link from "components/Link";
-import { Button, PrimaryButton } from "components/Button";
+import { BackLink } from "components/Link";
+import { IconButton } from "components/Button";
 import Exercise from "components/create/Exercise";
 
 const Container = styled.div`
-  padding: 2rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 
   > * {
     margin-top: 0.5rem;
@@ -18,8 +22,16 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.header`
+const WorkoutTitle = styled.h3`
+  margin: 0;
   font-size: 1.5rem;
+`;
+
+const Header = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 `;
 
 const Exercises = styled.div`
@@ -28,13 +40,6 @@ const Exercises = styled.div`
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
   }
-`;
-
-const Actions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
 `;
 
 const AddContainer = styled.div`
@@ -74,14 +79,13 @@ const ExerciseForm = ({
 }: Props) => {
   return (
     <Container>
-      <Title>Workout {workout.date || format(new Date(), "dd.MM.yyyy")}</Title>
-      <Actions>
-        <Link href="/" label="Back" />
-        <PrimaryButton
-          onClick={() => onSave(workout)}
-          label={!!workout.id ? "Update" : "Create"}
-        />
-      </Actions>
+      <Header>
+        <BackLink href="/" />
+        <WorkoutTitle>
+          {workout.date || format(new Date(), "dd.MM.yyyy")}
+        </WorkoutTitle>
+        <IconButton onClick={() => onSave(workout)} icon={() => <FiCheck />} />
+      </Header>
       <Exercises>
         {workout.exercises.map((exercise: WorkoutExercise, index: number) => (
           <Exercise

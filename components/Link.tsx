@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import NextLink, { LinkProps } from "next/link";
+import { FiArrowLeft } from "react-icons/fi";
 
 const LinkContainer = styled.div`
   display: flex;
@@ -40,5 +41,11 @@ const Link = (props: Props) => {
     </NextLink>
   );
 };
+
+export const BackLink = (props: LinkProps) => (
+  <NextLink {...props}>
+    <FiArrowLeft size={36} />
+  </NextLink>
+);
 
 export default Link;
