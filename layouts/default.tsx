@@ -6,6 +6,7 @@ import Link from "components/Link";
 
 import styles from "../styles/Home.module.css";
 import { IconType } from "react-icons/lib";
+import { useRouter } from "next/router";
 
 const Layout = styled.div`
   width: 100vw;
@@ -41,7 +42,11 @@ const TitleWrapper = styled.h1`
   justify-content: flex-end;
 `;
 
-const Title = styled.span``;
+const Title = styled.span`
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 const Links = styled.div`
   display: flex;
@@ -81,6 +86,7 @@ interface LayoutProps {
 }
 
 function DefaultLayout({ children }: LayoutProps) {
+  const router = useRouter();
   return (
     <Layout id="foo2">
       <Head>
@@ -88,7 +94,7 @@ function DefaultLayout({ children }: LayoutProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header>
-        <TitleWrapper>
+        <TitleWrapper onClick={() => router.push("/")}>
           <Title>Workout buddy</Title>
         </TitleWrapper>
         <Links>
