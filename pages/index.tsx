@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { initClient } from "apollo/client";
 
 import { WorkoutsQuery } from "apollo/queries";
-import Link from "components/Link";
 import Workouts from "../components/Workouts";
 
 const Container = styled.div`
@@ -20,8 +19,6 @@ const Home = function () {
   }
   return (
     <Container>
-      <Link href="/create" label="New workout" />
-      <Link href="/admin" label="Admin" />
       <Workouts workouts={data.workouts} />
     </Container>
   );
