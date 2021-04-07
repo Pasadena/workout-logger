@@ -1,6 +1,7 @@
-const BASE_URL = process.env.API_URL || "http://localhost:4000/dev/";
+const BASE_URL = process.env.API_URL || "http://localhost:4000/dev";
 
-export const formatUrl = (pathFragment: string) => `${BASE_URL}${pathFragment}`;
+export const formatUrl = (pathFragment: string) =>
+  `${BASE_URL}/${pathFragment}`;
 
 const requestConfig = (method: string, payload: unknown) => {
   if (["POST", "PUT"].includes(method)) {
