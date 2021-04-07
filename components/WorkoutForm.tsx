@@ -8,14 +8,6 @@ import { IconButton } from "components/Button";
 import Exercise from "components/create/Exercise";
 
 const Container = styled.div`
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-
-  @media (min-width: 768px) {
-    padding: 2rem;
-  }
-
   > * {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;

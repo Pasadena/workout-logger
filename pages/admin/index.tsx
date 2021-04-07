@@ -14,7 +14,6 @@ import TypeForm from "components/admin/TypeForm";
 import DeletableTile from "components/DeletableTile";
 
 const Container = styled.div`
-  width: 30%;
   & > * {
     margin-top: 1rem;
     margin-bottom: 1rem;

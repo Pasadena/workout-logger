@@ -60,6 +60,14 @@ const Links = styled.div`
 const Content = styled.main`
   grid-area: content;
   flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const Footer = styled.footer`
