@@ -13,15 +13,16 @@ import { useAddSet, useUpdateExercise } from "state/currentWorkout";
 const Container = styled.div`
   display: flex;
   padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
+  position: relative;
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 2rem 3rem;
 
-  border-radius: 4px;
-  box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
   > * {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
@@ -29,17 +30,27 @@ const Content = styled.div`
 `;
 
 const Title = styled.h2`
-  margin-bottom: 1rem;
-  margin-right: 1rem;
+  margin: 0;
+  position: absolute;
+  top: 20;
+  left: 20;
 `;
 
-const SetsTitle = styled.h3``;
+const SetsTitle = styled.h3`
+  margin: 0;
+  margin-top: 1rem;
+`;
 
 const AddSetIcon = styled(FiPlus)`
   width: 40px;
   height: 40px;
   color: green;
-  padding-left: 1rem;
+  margin-left: -3rem;
+  transition: color 0.2s;
+  &:hover {
+    cursor: pointer;
+    color: darkgreen;
+  }
 `;
 
 interface Props {

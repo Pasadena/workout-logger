@@ -13,8 +13,9 @@ const SetContainer = styled.div`
 `;
 
 const SetInput = styled(Input)`
-  width: 40px;
+  width: 50px;
   text-align: center;
+  padding: 0;
 `;
 
 const SetTitle = styled.div`

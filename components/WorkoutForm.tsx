@@ -24,10 +24,11 @@ const Header = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
 
 const Exercises = styled.div`
+  margin-top: 2rem;
   > * {
     box-sizing: border-box;
     margin-top: 0.25rem;
