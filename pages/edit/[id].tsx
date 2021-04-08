@@ -4,15 +4,17 @@ import { useRouter } from "next/router";
 
 import { UpdateWorkoutMutation, WorkoutQuery } from "apollo/queries";
 import WorkoutForm from "components/WorkoutForm";
-import { Workout, WorkoutExercise } from "types/types";
+import { Workout } from "types/types";
+import { useCurrentWorkoutState } from "state/currentWorkout";
 
 export default function EditWorkout() {
-  const [edtableWorkout, setEditableWorkout] = React.useState(null);
+  const [edtableWorkout, setEditableWorkout] = useCurrentWorkoutState();
   const router = useRouter();
   const { id } = router.query;
-  const { data, loading, error } = useQuery(WorkoutQuery, {
+  const { loading, error } = useQuery<{ workout: Workout }>(WorkoutQuery, {
     variables: { id },
     skip: !id,
+    onCompleted: (data) => setEditableWorkout(data.workout),
   });
   const [updateWorkout, { data: updatedWorkout }] = useMutation<Workout>(
     UpdateWorkoutMutation
@@ -22,41 +24,6 @@ export default function EditWorkout() {
       router.push("/");
     }
   }, [updatedWorkout]);
-
-  React.useEffect(() => {
-    if (data?.workout) {
-      const { workout } = data;
-      setEditableWorkout({ ...workout });
-    }
-  }, [data?.workout]);
-
-  const addExercise = React.useCallback(() => {
-    const withNewExercise = edtableWorkout.exercises.concat([
-      {
-        type: "",
-        sets: [
-          {
-            order: 1,
-            reps: 0,
-            weight: 0,
-          },
-        ],
-      },
-    ]);
-    setEditableWorkout({ ...edtableWorkout, exercises: withNewExercise });
-  }, [edtableWorkout, setEditableWorkout]);
-
-  const exerciseModified = React.useCallback(
-    (exercise: WorkoutExercise) => {
-      edtableWorkout.exercises = edtableWorkout.exercises.map(
-        (item: WorkoutExercise) => {
-          return item.id === exercise.id ? exercise : item;
-        }
-      );
-      setEditableWorkout({ ...edtableWorkout });
-    },
-    [edtableWorkout, setEditableWorkout]
-  );
 
   if (error) {
     return <div>Error</div>;
@@ -69,8 +36,6 @@ export default function EditWorkout() {
   return (
     <WorkoutForm
       workout={edtableWorkout}
-      onAddExercise={addExercise}
-      onExerciseModified={exerciseModified}
       onSave={(workout: Workout) =>
         updateWorkout({ variables: { workout: edtableWorkout } })
       }

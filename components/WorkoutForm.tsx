@@ -6,6 +6,7 @@ import { Workout, WorkoutExercise } from "types/types";
 import { BackLink } from "components/Link";
 import { IconButton } from "components/Button";
 import Exercise from "components/create/Exercise";
+import { useAddExercise } from "state/currentWorkout";
 
 const Container = styled.div`
   > * {
@@ -58,17 +59,11 @@ const AddTitle = styled.div`
 
 interface Props {
   workout: Workout;
-  onAddExercise: () => void;
-  onExerciseModified: (exercise: WorkoutExercise) => void;
   onSave: (workout: Workout) => void;
 }
 
-const ExerciseForm = ({
-  workout,
-  onAddExercise,
-  onExerciseModified,
-  onSave,
-}: Props) => {
+const ExerciseForm = ({ workout, onSave }: Props) => {
+  const addExercise = useAddExercise();
   return (
     <Container>
       <Header>
@@ -83,13 +78,12 @@ const ExerciseForm = ({
           <Exercise
             key={`exercise-${exercise.id}-${index}`}
             exercise={exercise}
-            onExerciseModified={onExerciseModified}
             order={index + 1}
           />
         ))}
       </Exercises>
       <AddContainer>
-        <AddIcon onClick={onAddExercise} />
+        <AddIcon onClick={addExercise} />
         <AddTitle>New exercise</AddTitle>
       </AddContainer>
     </Container>

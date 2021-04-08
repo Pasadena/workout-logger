@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { WorkoutSet } from "types/types";
+import { WorkoutExercise, WorkoutSet } from "types/types";
 
 import { Input } from "components/InputField";
+import { useUpdateSet } from "state/currentWorkout";
 
 const SetContainer = styled.div`
   display: flex;
@@ -23,17 +24,19 @@ const Divider = styled.span``;
 
 interface Props {
   title: string;
+  exercise: WorkoutExercise;
   set: WorkoutSet;
-  setModified: (set: WorkoutSet) => void;
 }
 
-const Set = ({ title, set, setModified }: Props) => {
+const Set = ({ title, exercise, set }: Props) => {
+  const updateSet = useUpdateSet();
+
   return (
     <SetContainer>
       <SetTitle>{title}</SetTitle>
       <SetInput
         onChange={(e) =>
-          setModified({ ...set, reps: parseInt(e.target.value) })
+          updateSet(exercise, { ...set, reps: parseInt(e.target.value) })
         }
         type="number"
         value={set.reps}
@@ -41,7 +44,7 @@ const Set = ({ title, set, setModified }: Props) => {
       <Divider>/</Divider>
       <SetInput
         onChange={(e) =>
-          setModified({ ...set, weight: parseInt(e.target.value) })
+          updateSet(exercise, { ...set, weight: parseInt(e.target.value) })
         }
         type="number"
         value={set.weight}

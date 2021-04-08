@@ -8,6 +8,7 @@ import { ExerciseType, WorkoutExercise, WorkoutSet } from "types/types";
 import Set from "./Set";
 import { SearchExerciseTypesQuery } from "apollo/queries";
 import Combobox from "components/Combobox";
+import { useAddSet, useUpdateExercise } from "state/currentWorkout";
 
 const Container = styled.div`
   display: flex;
@@ -44,41 +45,16 @@ const AddSetIcon = styled(FiPlus)`
 interface Props {
   exercise: WorkoutExercise;
   order: number;
-  onExerciseModified: (exercise: WorkoutExercise) => void;
 }
 
-const Exercise = ({ exercise, order, onExerciseModified }: Props) => {
+const Exercise = ({ exercise, order }: Props) => {
+  const addSet = useAddSet();
+  const updateExercise = useUpdateExercise();
+
   const [seachTypes, result] = useLazyQuery<{
     searchExerciseTypes: ExerciseType[];
   }>(SearchExerciseTypesQuery);
-  const setExerciseType = React.useCallback(
-    (type: ExerciseType) => {
-      onExerciseModified({ ...exercise, type });
-    },
-    [exercise]
-  );
-  const addSet = React.useCallback(() => {
-    const maxOrder = Math.max(
-      ...exercise.sets.map((set: WorkoutSet) => set.order)
-    );
-    const withNewSet = exercise.sets.concat([
-      {
-        order: maxOrder + 1,
-        reps: 0,
-        weight: 0,
-      },
-    ]);
-    onExerciseModified({ ...exercise, sets: withNewSet });
-  }, [exercise]);
-  const onSetModified = React.useCallback(
-    (set: WorkoutSet) => {
-      const updatedSets = exercise.sets.map((item: WorkoutSet) =>
-        item.order === set.order ? set : item
-      );
-      onExerciseModified({ ...exercise, sets: updatedSets });
-    },
-    [exercise]
-  );
+
   const searchTypes = React.useCallback((partialName: string) => {
     seachTypes({ variables: { partialName } });
   }, []);
@@ -89,7 +65,9 @@ const Exercise = ({ exercise, order, onExerciseModified }: Props) => {
         <Combobox
           label="Type"
           value={exercise.type?.name}
-          optionSelected={(type: ExerciseType) => setExerciseType(type)}
+          optionSelected={(type: ExerciseType) =>
+            updateExercise({ ...exercise, type })
+          }
           optionRenderer={(item: ExerciseType) => item.name}
           searchTermChanged={searchTypes}
           fetchResult={{ ...result, data: result.data?.searchExerciseTypes }}
@@ -100,10 +78,10 @@ const Exercise = ({ exercise, order, onExerciseModified }: Props) => {
             key={`set-${index}`}
             set={set}
             title={`${index + 1}.`}
-            setModified={onSetModified}
+            exercise={exercise}
           />
         ))}
-        <AddSetIcon onClick={(e) => addSet()} />
+        <AddSetIcon onClick={(e) => addSet(exercise)} />
       </Content>
     </Container>
   );

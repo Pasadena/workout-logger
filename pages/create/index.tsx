@@ -4,20 +4,13 @@ import { useRouter } from "next/router";
 
 import { AddWorkoutMutation } from "apollo/queries";
 import WorkoutForm from "components/WorkoutForm";
-import { Workout, WorkoutExercise } from "types/types";
+import { Workout } from "types/types";
 import { appendToCache } from "apollo/cache";
-
-const emptyExercise = (order = 1) => ({
-  type: null,
-  order,
-  sets: [{ order: 1, reps: 0, weight: 0 }],
-});
+import { useCurrentWorkout } from "state/currentWorkout";
 
 export default function CreateWorkout() {
   const router = useRouter();
-  const [workout, setWorkout] = React.useState<Workout>({
-    exercises: [emptyExercise()],
-  });
+  const workout = useCurrentWorkout();
 
   const [addWorkout, { data: addWorkoutResponse }] = useMutation<{
     saveWorkout: Workout;
@@ -49,33 +42,9 @@ export default function CreateWorkout() {
     addWorkout({ variables: { workout } });
   }, [workout]);
 
-  const addExercise = React.useCallback(() => {
-    const maxOrder = Math.max(
-      ...workout.exercises.map((item: WorkoutExercise) => item.order)
-    );
-    const withNewExercise = workout.exercises.concat([
-      emptyExercise(maxOrder + 1),
-    ]);
-    setWorkout({ ...workout, exercises: withNewExercise });
-  }, [workout, setWorkout]);
-
-  const exerciseModified = React.useCallback(
-    (exercise: WorkoutExercise) => {
-      const updatedExercises = workout.exercises.map(
-        (item: WorkoutExercise) => {
-          return item.order === exercise.order ? exercise : item;
-        }
-      );
-      setWorkout({ ...workout, exercises: updatedExercises });
-    },
-    [workout, setWorkout]
-  );
-
   return (
     <WorkoutForm
       workout={workout}
-      onAddExercise={addExercise}
-      onExerciseModified={exerciseModified}
       onSave={(workout: Workout) => saveWorkout()}
     />
   );
