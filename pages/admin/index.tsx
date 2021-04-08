@@ -40,7 +40,6 @@ const TypeCount = styled.span`
 `;
 
 const Type = styled.div`
-  padding: 1rem;
   font-size: 1.5rem;
   font-weight: 500;
 `;
