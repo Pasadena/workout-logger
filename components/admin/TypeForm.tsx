@@ -9,22 +9,24 @@ import { appendToCache } from "apollo/cache";
 import { ExerciseType } from "types/types";
 
 const Form = styled.form`
-  padding: 1rem;
+  padding: 1.5rem;
   background-color: #f5f5f5;
+  border-radius: 4px;
   box-shadow: 0px 15px 10px -15px rgb(0 0 0 / 30%);
-  & > * {
-    margin-right: 1rem;
-  }
 `;
 
 const Title = styled.h3`
   margin-top: 0;
+  margin-bottom: 2rem;
 `;
 
 const Content = styled.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: 1rem;
+  & > * {
+    margin-right: 1rem;
+  }
 `;
 
 export default function TypeForm() {
@@ -61,7 +63,7 @@ export default function TypeForm() {
 
   return (
     <Form onSubmit={createType}>
-      <Title>Create a new type</Title>
+      <Title>Create a new exercise type:</Title>
       <Content>
         <InputField
           label="Name"
