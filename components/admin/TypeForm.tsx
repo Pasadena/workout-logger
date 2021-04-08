@@ -52,17 +52,13 @@ export default function TypeForm() {
       ),
   });
 
-  const createType = React.useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      saveExerciseType({ variables: { name } });
-      setName("");
-    },
-    [name, setName]
-  );
+  const createType = React.useCallback(() => {
+    saveExerciseType({ variables: { name } });
+    setName("");
+  }, [name, setName]);
 
   return (
-    <Form onSubmit={createType}>
+    <Form>
       <Title>Create a new exercise type:</Title>
       <Content>
         <InputField
@@ -74,7 +70,7 @@ export default function TypeForm() {
             setName(e.target.value)
           }
         />
-        <PrimaryButton type="submit" label="Create" />
+        <PrimaryButton label="Create" onClick={() => createType()} />
       </Content>
     </Form>
   );
